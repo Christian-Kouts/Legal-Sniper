@@ -1,0 +1,4 @@
+https://app.pinecone.io/
+Your "default" API key has been generated.
+
+pcsk_6J6aSD_2L7z3iJ5kuseX1J8bA2m1jfBeR4oAxUEZx2QZPSMtmsDgT1aQhV8Zr8txndCGZT
