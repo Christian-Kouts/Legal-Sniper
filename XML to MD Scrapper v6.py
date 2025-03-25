@@ -123,9 +123,27 @@ def handle_paragraph(paragraph):
     return md
 
 def handle_subparagraph(subparagraph):
-    subpara_label = subparagraph.find('Label').text
-    subpara_text = ''.join(subparagraph.find('Text').itertext())
+    # Get the main label and text for the subparagraph
+    label_elem = subparagraph.find('Label')
+    text_elem = subparagraph.find('Text')
+    subpara_label = label_elem.text if label_elem is not None else ""
+    subpara_text = ''.join(text_elem.itertext()) if text_elem is not None else ""
+    
+    # Start the markdown with the subparagraph's label and text
     md = f"\t\t- {subpara_label} {subpara_text}\n"
+    
+    # Process any additional child elements (e.g., Clause, ContinuedSubparagraph) in order
+    for child in subparagraph:
+        if child.tag in ['Label', 'Text']:
+            continue  # Already processed
+        if child.tag == 'Clause':
+            clause_label = child.find('Label').text if child.find('Label') is not None else ""
+            clause_text = ''.join(child.find('Text').itertext()) if child.find('Text') is not None else ""
+            md += f"\t\t\t- {clause_label} {clause_text}\n"
+        elif child.tag == 'ContinuedSubparagraph':
+            cont_text = ''.join(child.find('Text').itertext()) if child.find('Text') is not None else ""
+            # Append continued text on the same line
+            md += f" {cont_text}"
     return md
 
 def main():
@@ -157,4 +175,5 @@ def main():
         print(f"Generated {output_md_file}")
 
 if __name__ == "__main__":
-    main()
+    # main()
+    xml_to_md('https://laws-lois.justice.gc.ca/eng/XML/I-3.3.xml', 'MD Files\\I-3.3.md')
